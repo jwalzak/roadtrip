@@ -1,9 +1,12 @@
 var longitude;
 var latitude;
-var pos = {};
+var posArray = [];
 var map = {};
-//
+var marker = [];
 
+//
+//CREATE AN APP OBJECT THAT HOLDS THE MAP
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 var app = {
 
 	initialize: function() {
@@ -18,12 +21,13 @@ onDeviceReady: function(){
 
 //activate geolocation - GO!
 navigator.geolocation.getCurrentPosition(app.onSuccess, app.onError);
+document.getElementById('controls').style.visibility = 'visible'; 
 }, 
 
 //Geo located you! Good Job! 
 onSuccess: function(position) {
+	latitude = position.coords.latitude;
 	longitude = position.coords.longitude; 
-	latitude = position.coords.latitude; 
 	var latLong = new google.maps.LatLng(latitude, longitude); 
 
 //some map options. Crucial unit. 
@@ -43,29 +47,70 @@ onError: function(error) {
 	alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
 },
 
-};
+}; //end of the APP OBJECT
 
-function startTrip(){
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  
 
-    // Show a custom alertDismissed
-    //
+// 1. Get the user's current position
+// 2. Display position in an alert
+// 3. When alert is dismissed, Add position to posArray
+// 4. Drop pin 
+
+function dropPin(){
+
+//1. 
+navigator.geolocation.getCurrentPosition(function(position) {
+    	
+    	latitude = position.coords.latitude;
+    	longitude = position.coords.longitude; 
+ //2.      
         navigator.notification.alert(
-            longitude + ' ' + latitude,  // message
+            latitude + ' ' + longitude,  // message
             alertDismissed,         // callback
             'Your Position',            // title
             'Done'                  // buttonName
         );
     }
+);}
 
  function alertDismissed() {
-            //drop a pin, hopefully
-          pos = {lat: latitude, lng:longitude};
-            
+          var pos = {lat: latitude, lng: longitude};
+ //3.          
+		  posArray.push(pos);             
+ //4.           
           var marker = new google.maps.Marker({
           position: pos,
+          animation: google.maps.Animation.DROP,
           map: map,
           title: 'You are here'
         });
         }
+
+ // 1. Get number of stops on trip so far (number of elements in posArray)
+ // 2. Display stops in order using alerts (for test purposes)       
+
+ function tripHistory() {
+
+ 	var posLength = posArray.length; 
+
+ 	for (var i = 0; i < posLength; i++) {
+
+ 		navigator.notification.alert(
+            posArray[i],  // message
+            alertDismissed,         // callback
+            'Stop #' + (i + 1),            // title
+            'Done'                  // buttonName
+        );}
+
+ 	}
+ 
+
+ function toggleBounce(marker) {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+
+      }
