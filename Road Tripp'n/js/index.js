@@ -98,7 +98,7 @@ navigator.geolocation.getCurrentPosition(function(position) {
 
  		navigator.notification.alert(
             posArray[i],  // message
-            alertDismissed,         // callback
+           fauxDismiss,         // callback
             'Stop #' + (i + 1),            // title
             'Done'                  // buttonName
         );}
@@ -112,5 +112,9 @@ navigator.geolocation.getCurrentPosition(function(position) {
         } else {
           marker.setAnimation(google.maps.Animation.BOUNCE);
         }
+
+      }
+
+      function fauxDismiss() {
 
       }
