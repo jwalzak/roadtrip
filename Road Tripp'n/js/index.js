@@ -85,12 +85,15 @@ navigator.geolocation.getCurrentPosition(function(position) {
           map: map,
           title: 'You are here'
         });
+           map.setCenter(marker.getPosition());
         }
 
  // 1. Get number of stops on trip so far (number of elements in posArray)
  // 2. Display stops in order using alerts (for test purposes)       
 
  function tripHistory() {
+
+  var counter = 1; 
 
  	var posLength = posArray.length; 
 
@@ -99,9 +102,11 @@ navigator.geolocation.getCurrentPosition(function(position) {
  		navigator.notification.alert(
             posArray[i],  // message
            fauxDismiss,         // callback
-            'Stop #' + (i + 1),            // title
+            'Stop #' + counter,            // title
             'Done'                  // buttonName
-        );}
+        );
+      counter++; 
+  }
 
  	}
  
